@@ -106,9 +106,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // POST trigger a new analysis with OpenAI
-  app.post("/api/analyze", async (_req: Request, res: Response) => {
+  app.post("/api/analyze", async (req: Request, res: Response) => {
     try {
-      // Call OpenAI to analyze YouTube niches
+      console.log("Starting AI video niche analysis...");
+      // Call OpenAI to analyze YouTube niches focused on AI content
       const analysisResult = await analyzeYoutubeNiches();
       
       // Clear existing data (in a real application, you might archive it instead)

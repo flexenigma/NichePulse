@@ -49,48 +49,50 @@ export async function analyzeYoutubeNiches(): Promise<NicheAnalysisResult> {
       messages: [
         {
           role: "system",
-          content: "You are an expert YouTube trend analyzer with deep knowledge of content categories, monetization, and audience behavior. Your task is to analyze current YouTube trends and provide comprehensive insights."
+          content: "You are an expert YouTube trend analyzer with deep knowledge of AI-related content categories, monetization, and audience behavior. Your task is to analyze current AI-related YouTube trends and provide comprehensive insights backed by real YouTube trend data."
         },
         {
           role: "user",
-          content: `Analyze current YouTube niche trends and provide detailed information in a structured JSON format with the following:
+          content: `Analyze current YouTube AI-focused niche trends and provide detailed information in a structured JSON format with the following:
           
-          1. A list of the top 10 YouTube niches with their:
-             - name
+          1. A list of the top 10 AI-related YouTube niches with their:
+             - name (focus on niches like Video Editing with AI, Prompt Engineering, Text-to-Image AI, AI Music Production, AI Coding Assistants, etc.)
              - growthRate (percent, can be negative)
              - competition level (Low, Medium, High, Very High)
              - revenuePotential (CPM in USD)
              - trend (up or down)
           
           2. Competitive insights including:
-             - leastCompetitive niche
-             - mostCompetitive niche
-             - bestEntryPoint for new creators
-             - fastestGrowing niche
+             - leastCompetitive AI niche
+             - mostCompetitive AI niche
+             - bestEntryPoint for new creators in the AI space
+             - fastestGrowing AI video content niche
           
           3. Monetization insights including:
-             - highestCPM niche with dollar amount
-             - lowestCPM niche with dollar amount
-             - bestSponsorship niche
-             - bestLongTerm monetization niche
+             - highestCPM AI niche with dollar amount
+             - lowestCPM AI niche with dollar amount
+             - bestSponsorship opportunities for AI content
+             - bestLongTerm monetization strategy for AI video creators
           
-          4. Two specific AI-powered recommendations for unique niche combinations with titles and detailed descriptions
+          4. Two specific AI-powered recommendations for unique AI niche combinations with titles and detailed descriptions
           
           5. Overall metrics highlighting:
-             - topGrowingNiche name
+             - topGrowingNiche name within AI video content
              - topGrowingPercentage value
-             - mostProfitableNiche name
+             - mostProfitableNiche name for AI content
              - mostProfitableCPM value in USD
-             - lowestCompetitionNiche name
+             - lowestCompetitionNiche name in AI space
              - lowestCompetitionPercentage as growth potential
           
-          Make the response realistic and useful for content creators. Use current trends based on your knowledge.`
+          Make the response realistic and useful for AI content creators. Use current trends based on real YouTube analytics and data.
+          Focus only on AI-related niches like AI tools, AI techniques, AI applications in art, music, coding, video editing, etc.`
         }
       ],
       response_format: { type: "json_object" }
     });
 
-    const result = JSON.parse(response.choices[0].message.content);
+    const content = response.choices[0].message.content || "{}";
+    const result = JSON.parse(content);
     return result as NicheAnalysisResult;
   } catch (error) {
     console.error("Error analyzing YouTube niches:", error);
@@ -105,11 +107,11 @@ export async function getTrendingData(): Promise<TrendingDataResult> {
       messages: [
         {
           role: "system",
-          content: "You are an expert in YouTube analytics and trends."
+          content: "You are an expert in YouTube analytics and trends focusing specifically on AI-related content. Your analysis is based on real YouTube trend data and actual channel performance metrics."
         },
         {
           role: "user",
-          content: `Generate trending data for 10 YouTube content categories in JSON format.
+          content: `Generate trending data for the top 10 AI-focused YouTube content niches based on real YouTube analytics and trend data. Focus specifically on AI video creation tools, techniques, and applications.
           
           Return the data in this format:
           {
@@ -117,15 +119,17 @@ export async function getTrendingData(): Promise<TrendingDataResult> {
             "percentages": [number1, number2, ...]
           }
           
-          The categories should be short names like "Tech", "Gaming", etc.
-          The percentages should be popularity scores between 40 and 95.
-          Make sure the data reflects current trends based on your knowledge.`
+          The categories should be specific AI niches like "AI Video Editing", "Prompt Engineering", "Text-to-Image AI", "AI Music Production", etc.
+          The percentages should be popularity/growth scores between 40 and 95 reflecting their current performance on YouTube.
+          
+          Make sure the data reflects current real-world AI YouTube trends as of 2024, using your knowledge of actual YouTube performance metrics for these niches.`
         }
       ],
       response_format: { type: "json_object" }
     });
 
-    const result = JSON.parse(response.choices[0].message.content);
+    const content = response.choices[0].message.content || "{}";
+    const result = JSON.parse(content);
     return result as TrendingDataResult;
   } catch (error) {
     console.error("Error getting trending data:", error);

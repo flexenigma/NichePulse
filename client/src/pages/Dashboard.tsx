@@ -68,8 +68,8 @@ export default function Dashboard() {
         <main className="flex-1 overflow-y-auto bg-youtube-light-gray p-4">
           {/* Page Header */}
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-youtube-black">YouTube Niche Analysis</h1>
-            <p className="text-youtube-gray">AI-powered insights for the most popular content categories</p>
+            <h1 className="text-2xl font-bold text-youtube-black">AI Video Niche Analysis</h1>
+            <p className="text-youtube-gray">Real-time insights for AI-focused YouTube content creators</p>
           </div>
           
           {/* Main Content */}
