@@ -9,9 +9,12 @@ import { AIRecommendations } from "@/components/dashboard/AIRecommendations";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useMobile } from "@/hooks/use-mobile";
+import { Button } from "@/components/ui/button";
+import { queryClient } from "@/lib/queryClient";
 
 export default function Dashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const { isMobile } = useMobile();
   const { toast } = useToast();
 
@@ -44,6 +47,42 @@ export default function Dashboard() {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+  
+  const refreshAnalysis = async () => {
+    try {
+      setIsAnalyzing(true);
+      
+      toast({
+        title: "Refreshing AI video niche analysis",
+        description: "We're analyzing the latest YouTube AI content trends. This will take a moment...",
+      });
+      
+      await apiRequest("POST", "/api/analyze", {});
+      
+      // Invalidate all queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ["/api/niches"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/insights/niche"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/insights/monetization"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/recommendations"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/metrics"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/trending"] });
+      
+      toast({
+        title: "Analysis complete!",
+        description: "Your AI video niche insights have been updated with the latest data.",
+      });
+      
+    } catch (error) {
+      console.error("Error refreshing analysis:", error);
+      toast({
+        title: "Analysis failed",
+        description: "There was an error updating the AI video niche analysis.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -67,9 +106,28 @@ export default function Dashboard() {
         
         <main className="flex-1 overflow-y-auto bg-youtube-light-gray p-4">
           {/* Page Header */}
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold text-youtube-black">AI Video Niche Analysis</h1>
-            <p className="text-youtube-gray">Real-time insights for AI-focused YouTube content creators</p>
+          <div className="flex justify-between items-start mb-6">
+            <div>
+              <h1 className="text-2xl font-bold text-youtube-black">AI Video Niche Analysis</h1>
+              <p className="text-youtube-gray">Real-time insights for AI-focused YouTube content creators</p>
+            </div>
+            <Button 
+              onClick={refreshAnalysis}
+              disabled={isAnalyzing}
+              className="bg-youtube-red hover:bg-red-700 text-white"
+            >
+              {isAnalyzing ? (
+                <>
+                  <span className="material-icons animate-spin mr-2">refresh</span>
+                  Analyzing...
+                </>
+              ) : (
+                <>
+                  <span className="material-icons mr-2">refresh</span>
+                  Refresh Analysis
+                </>
+              )}
+            </Button>
           </div>
           
           {/* Main Content */}
