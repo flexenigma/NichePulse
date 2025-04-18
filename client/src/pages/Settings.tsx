@@ -63,12 +63,40 @@ export default function Settings() {
     },
   });
 
-  function onSubmit(data: SettingsFormValues) {
-    toast({
-      title: "Settings updated",
-      description: "Your preferences have been saved successfully.",
-    });
-    console.log(data);
+  async function onSubmit(data: SettingsFormValues) {
+    try {
+      // Handle OpenAI API key update if provided
+      if (data.openaiApiKey) {
+        const response = await fetch("/api/settings/openai-key", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ openaiApiKey: data.openaiApiKey }),
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to update OpenAI API key");
+        }
+      }
+      
+      toast({
+        title: "Settings updated",
+        description: "Your preferences have been saved successfully.",
+      });
+      console.log(data);
+      
+      // Clear the OpenAI API key from the form for security
+      form.setValue("openaiApiKey", "");
+    } catch (error) {
+      console.error("Error saving settings:", error);
+      toast({
+        title: "Settings update failed",
+        description: error instanceof Error ? error.message : "An unknown error occurred",
+        variant: "destructive"
+      });
+    }
   }
 
   return (

@@ -79,8 +79,12 @@ export default function Dashboard() {
       let errorMessage = "There was an error updating the AI video niche analysis.";
       
       if (error instanceof Error && 
-          error.message.includes("quota")) {
-        errorMessage = "OpenAI API quota exceeded. Please update your API key or check billing details.";
+          (error.message.includes("quota") || error.message.includes("429"))) {
+        errorMessage = "OpenAI API quota exceeded. Please go to Settings to update your API key.";
+        // After a short delay, navigate to the settings page
+        setTimeout(() => {
+          window.location.href = '/settings';
+        }, 3000);
       }
       
       toast({
