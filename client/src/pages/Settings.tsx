@@ -36,6 +36,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 const settingsFormSchema = z.object({
   refreshInterval: z.enum(["never", "daily", "weekly", "monthly"]),
   apiKey: z.string().optional(),
+  openaiApiKey: z.string().optional(),
   emailNotifications: z.boolean(),
   dataExportFormat: z.enum(["csv", "json", "excel"]),
 });
@@ -56,6 +57,7 @@ export default function Settings() {
     defaultValues: {
       refreshInterval: "weekly",
       apiKey: "",
+      openaiApiKey: "",
       emailNotifications: true,
       dataExportFormat: "csv",
     },
@@ -146,6 +148,27 @@ export default function Settings() {
                         </FormControl>
                         <FormDescription>
                           Provide your own YouTube API key for enhanced analysis
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="openaiApiKey"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>OpenAI API Key</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="password" 
+                            placeholder="Enter your OpenAI API key" 
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Add your OpenAI API key to enable AI-powered niche analysis
                         </FormDescription>
                         <FormMessage />
                       </FormItem>

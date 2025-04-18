@@ -12,6 +12,25 @@ import {
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // POST update OpenAI API key
+  app.post("/api/settings/openai-key", async (req: Request, res: Response) => {
+    try {
+      const { openaiApiKey } = req.body;
+      
+      if (!openaiApiKey) {
+        return res.status(400).json({ message: "OpenAI API key is required" });
+      }
+      
+      // In a real app, we would securely store this key
+      // For this demo, we'll set it in env vars for the current session
+      process.env.OPENAI_API_KEY = openaiApiKey;
+      
+      res.json({ message: "OpenAI API key updated successfully" });
+    } catch (error) {
+      console.error("Error updating OpenAI API key:", error);
+      res.status(500).json({ message: "Failed to update OpenAI API key", error: (error as Error).message });
+    }
+  });
   // GET all niches
   app.get("/api/niches", async (_req: Request, res: Response) => {
     try {
@@ -171,6 +190,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Analysis error:", error);
+      
+      // Check if it's a quota exceeded error
+      if (error instanceof Error && error.message.includes("quota")) {
+        return res.status(429).json({ 
+          message: "OpenAI API quota exceeded", 
+          error: "Please check your API key and billing details before trying again." 
+        });
+      }
+      
       res.status(500).json({ message: "Failed to analyze YouTube niches", error: (error as Error).message });
     }
   });

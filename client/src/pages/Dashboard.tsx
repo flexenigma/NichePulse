@@ -74,9 +74,18 @@ export default function Dashboard() {
       
     } catch (error) {
       console.error("Error refreshing analysis:", error);
+      
+      // Check if it's an API quota error
+      let errorMessage = "There was an error updating the AI video niche analysis.";
+      
+      if (error instanceof Error && 
+          error.message.includes("quota")) {
+        errorMessage = "OpenAI API quota exceeded. Please update your API key or check billing details.";
+      }
+      
       toast({
         title: "Analysis failed",
-        description: "There was an error updating the AI video niche analysis.",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {

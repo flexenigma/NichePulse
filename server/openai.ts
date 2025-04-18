@@ -96,6 +96,11 @@ export async function analyzeYoutubeNiches(): Promise<NicheAnalysisResult> {
     return result as NicheAnalysisResult;
   } catch (error) {
     console.error("Error analyzing YouTube niches:", error);
+    // Check if the error is related to exceeding quota
+    if (error instanceof Error && 
+        (error.message.includes("quota") || error.message.includes("429") || error.message.includes("insufficient_quota"))) {
+      throw new Error("API quota exceeded: Please check your OpenAI API key or billing details.");
+    }
     throw new Error("Failed to analyze YouTube niches: " + (error as Error).message);
   }
 }
@@ -133,6 +138,11 @@ export async function getTrendingData(): Promise<TrendingDataResult> {
     return result as TrendingDataResult;
   } catch (error) {
     console.error("Error getting trending data:", error);
+    // Check if the error is related to exceeding quota
+    if (error instanceof Error && 
+        (error.message.includes("quota") || error.message.includes("429") || error.message.includes("insufficient_quota"))) {
+      throw new Error("API quota exceeded: Please check your OpenAI API key or billing details.");
+    }
     throw new Error("Failed to get trending data: " + (error as Error).message);
   }
 }
