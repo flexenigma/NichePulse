@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
 import { useMobile } from "@/hooks/use-mobile";
@@ -63,10 +63,19 @@ export default function Settings() {
     },
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   async function onSubmit(data: SettingsFormValues) {
     try {
+      setIsSubmitting(true);
+
       // Handle OpenAI API key update if provided
       if (data.openaiApiKey) {
+        toast({
+          title: "Updating API key",
+          description: "Saving your OpenAI API key...",
+        });
+        
         const response = await fetch("/api/settings/openai-key", {
           method: "POST",
           headers: {
@@ -89,6 +98,12 @@ export default function Settings() {
       
       // Clear the OpenAI API key from the form for security
       form.setValue("openaiApiKey", "");
+      
+      // After a brief delay, redirect back to the dashboard
+      setTimeout(() => {
+        // Redirect to dashboard to try the fresh API key
+        window.location.href = '/';
+      }, 1500);
     } catch (error) {
       console.error("Error saving settings:", error);
       toast({
@@ -96,6 +111,8 @@ export default function Settings() {
         description: error instanceof Error ? error.message : "An unknown error occurred",
         variant: "destructive"
       });
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -253,8 +270,12 @@ export default function Settings() {
                     )}
                   />
                   
-                  <Button type="submit" className="bg-youtube-red hover:bg-red-700 text-white">
-                    Save Settings
+                  <Button 
+                    type="submit" 
+                    className="bg-youtube-red hover:bg-red-700 text-white w-36"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Saving..." : "Save Settings"}
                   </Button>
                 </form>
               </Form>
